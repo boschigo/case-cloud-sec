@@ -1,0 +1,36 @@
+name: Validar infraestrutura
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validar_infraestrutura:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Validar sintaxe e formatacao Terraform
+        run: |
+          terraform init -backend=false
+          terraform fmt -check
+          terraform validate
+
+      - name: Instalar Cloud Custodian (c7n-left)
+        run: pip install c7n-left
+
+      - name: Cloud Custodian
+        run: c7n-left run -p policies/ -d tf/
+
+  deploy_conceitual:
+    needs: validar_infraestrutura
+    runs-on: ubuntu-latest
+    steps:
+      - name: Executar deploy simulado
+        run: echo "Infraestrutura aprovada no Gate de Segurança! Deploy liberado."
