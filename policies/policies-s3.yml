@@ -3,7 +3,7 @@ policies:
     resource: terraform.aws_s3_bucket_public_access_block
     description: "[FAIL] S3 sem bloqueio total de acesso publico."
     metadata:
-        severity: high
+      severity: high
     filters:
       - or:
           - block_public_acls: false
@@ -15,7 +15,7 @@ policies:
     resource: terraform.aws_s3_bucket_policy
     description: "[FAIL] S3 com politica permitindo acesso anonimo (Effect Allow com Principal *)."
     metadata:
-        severity: critical
+      severity: critical
     filters:
       - type: value
         key: policy
