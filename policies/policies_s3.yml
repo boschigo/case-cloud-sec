@@ -1,0 +1,23 @@
+policies:
+  - name: s3-bloqueio-publico-incompleto
+    resource: terraform.aws_s3_bucket_public_access_block
+    description: "[FAIL] S3 sem bloqueio total de acesso publico."
+    metadata:
+        severity: high
+    filters:
+      - or:
+          - block_public_acls: false
+          - block_public_policy: false
+          - ignore_public_acls: false
+          - restrict_public_buckets: false
+
+  - name: s3-politica-permissiva
+    resource: terraform.aws_s3_bucket_policy
+    description: "[FAIL] S3 com politica permitindo acesso anonimo (Effect Allow com Principal *)."
+    metadata:
+        severity: critical
+    filters:
+      - type: value
+        key: policy
+        op: regex
+        value: '.*"Effect"\s*:\s*"Allow".*"Principal"\s*:\s*"\*".*'
